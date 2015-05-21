@@ -9,22 +9,21 @@ from flask import Blueprint
 
 import util
 
-AdmiralAPIv2 = Blueprint("AdmiralAPIv2", __name__)
+admiral_api_v2 = Blueprint("admiral_api_v2", __name__)
 
 
-@AdmiralAPIv2.route("/<token>")
+@admiral_api_v2.route("/<token>")
 def base_token(token):
-    admiral = util.get_admiral_v2_from_id_or_token(token)
+    admiral = util.get_admiral_v2_from_id(token)
     if not admiral:
         return "Invalid API token/ID", 404
     else:
         return admiral.user.nickname
 
 
-
-@AdmiralAPIv2.route("/<token>/userinfo")
+@admiral_api_v2.route("/<token>/userinfo")
 def get_userinfo(token):
-    admiral = util.get_admiral_v2_from_id_or_token(token)
+    admiral = util.get_admiral_v2_from_id(token)
     if not admiral:
         return "Invalid API token/ID", 404
     tdict = {
@@ -43,10 +42,10 @@ def get_userinfo(token):
     return json.dumps(tdict), 200, {"Content-Type": "application/json"}
 
 
-@AdmiralAPIv2.route("/<token>/material/<matid>")
+@admiral_api_v2.route("/<token>/material/<matid>")
 def material(token, matid):
     matid = int(matid) if matid != "all" else matid
-    admiral = util.get_admiral_v2_from_id_or_token(token)
+    admiral = util.get_admiral_v2_from_id(token)
     resources = admiral.resources.split(',')
     if matid == "all":
         return json.dumps(
@@ -59,4 +58,3 @@ def material(token, matid):
             return json.dumps(
                 {"materials": [{"id": matid, "count": int(resources[matid])}]}
             ), 200, {"Content-Type": "application/json"}
-
