@@ -10,10 +10,6 @@ from forms import *
 from admin import admin
 from app import app
 
-if not os.path.exists('./config.py'):
-    print("Your config file does not exist. "
-          "Create it by copying config.example.py to config.py and editing the required variables.")
-    exit(1)
 
 # --> Extension setup
 db.init_app(app)
@@ -32,14 +28,19 @@ app.register_blueprint(play, url_prefix='/play')
 from modules.api.core import api_core
 
 app.register_blueprint(api_core, url_prefix='/kcsapi')
+
+# Declare API v1 blueprints.
 from modules.api.v1.user import api_user
-
-from modules.api.v2.AdmiralAPI import admiral_api_v2
-app.register_blueprint(admiral_api_v2, url_prefix='/api/v2/admiral')
-
+from modules.api.v1.actions import api_actions
 app.register_blueprint(api_user, url_prefix='/kcsapi')
+app.register_blueprint(api_actions, url_prefix='/kcsapi')
 
 
+# Declare API v2 blueprints.
+from modules.api.v2.AdmiralAPI import AdmiralAPIv2
+from modules.api.v2.DockAPI import DockAPIv2
+app.register_blueprint(AdmiralAPIv2, url_prefix='/api/v2/admiral')
+app.register_blueprint(DockAPIv2, url_prefix='/api/v2/docks')
 
 from modules.resources import resources
 
